@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+require 'daemons'
+require 'nephelae'
+require 'optparse'
+
+settings = {}
+
+opts = ARGV.options{ |o|
+  o.banner << " command"
+  o.on("-k", "--aws-access-key", "AWS Access Key to use for cloudwatch" do |v|
+    settings[:aws_access_key] = v
+  end
+  o.on("-s", "--aws-secret-access-key", "AWS Secret Access Key to use for cloudwatch" do |v|
+    settings[:aws_secret_access_key] = v
+  end
+
+}
+
+opts.parse!
+
+new_argv = [ARGV.first]
+Daemons.run_proc('nephelae', {ARGV: new_argv}) do
+  r = Nephelae::Runner.new(settings)
+  r.run
+end
