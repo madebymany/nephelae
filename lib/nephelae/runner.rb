@@ -3,17 +3,18 @@ require 'rufus/scheduler'
 module Nephelae
   class Runner
 
-    attr_accessor :aws_access_key_id, :aws_secret_access_key
+    attr_accessor :aws_access_key_id, :aws_secret_access_key, :region
 
     def initialize(config = {})
       @aws_access_key_id = config[:aws_access_key_id]
       @aws_secret_access_key = config[:aws_secret_access_key]
+      @region = config[:region]
     end
     
     def run
 
       EM.run {
-          cloud = CloudWatch.new({aws_access_key_id: @aws_access_key_id, aws_secret_access_key: @aws_secret_access_key})
+          cloud = CloudWatch.new({aws_access_key_id: @aws_access_key_id, aws_secret_access_key: @aws_secret_access_key, region: @region})
 
           #make one request to put a cloud watch metric for nephelae being up. hopefully this can make it bork early if anything is wrong
           cloud.put_metric(NephelaeProcess.new.get_metrics)

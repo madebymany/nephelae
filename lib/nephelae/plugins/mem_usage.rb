@@ -47,12 +47,12 @@ module Nephelae
 
     private
       def parse_status(body)
-        { :mem_total => body.match(/MemTotal:\s+(\d+)\s/)[1],
-          :mem_free => body.match(/MemFree:\s+(\d+)\s/)[1],
-          :buffers => body.match(/Buffers:\s+(\d+)\s/)[1],
-          :cached => body.match(/Cached:\s+(\d+)\s/)[1],
-          :swap_total => body.match(/SwapTotal:\s+(\d+)\s/)[1],
-          :swap_free => body.match(/SwapFree:\s+(\d+)\s/)[1]
+        { :mem_total => body.match(/MemTotal:\s+(\d+)\s/)[1].to_i,
+          :mem_free => body.match(/MemFree:\s+(\d+)\s/)[1].to_i,
+          :buffers => body.match(/Buffers:\s+(\d+)\s/)[1].to_i,
+          :cached => body.match(/Cached:\s+(\d+)\s/)[1].to_i,
+          :swap_total => body.match(/SwapTotal:\s+(\d+)\s/)[1].to_i,
+          :swap_free => body.match(/SwapFree:\s+(\d+)\s/)[1].to_i
         }
       end
 

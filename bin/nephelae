@@ -15,6 +15,9 @@ OptionParser.new do |o|
     settings[:aws_secret_access_key] = v
   end
 
+  o.on("-r", "--region REGION", "The region to use for cloudwatch") do |v|
+    settings[:region] = v
+  end
 end.parse!
 
 new_argv = [ARGV.first]
