@@ -42,7 +42,8 @@ module Nephelae
     end
 
     def put_metric(metric)
-      request(metric.params)
+      params = metric.params
+      request(metric.params) unless params.nil?
     end
 
   end

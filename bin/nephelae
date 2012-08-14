@@ -6,18 +6,16 @@ require 'optparse'
 
 settings = {}
 
-opts = ARGV.options{ |o|
+OptionParser.new do |o|
   o.banner << " command"
-  o.on("-k", "--aws-access-key", "AWS Access Key to use for cloudwatch" do |v|
-    settings[:aws_access_key] = v
+  o.on("-k", "--aws-access-key-id ACCESSKEY", "AWS Access Key to use for cloudwatch") do |v|
+    settings[:aws_access_key_id] = v
   end
-  o.on("-s", "--aws-secret-access-key", "AWS Secret Access Key to use for cloudwatch" do |v|
+  o.on("-s", "--aws-secret-access-key SECRETKEY", "AWS Secret Access Key to use for cloudwatch") do |v|
     settings[:aws_secret_access_key] = v
   end
 
-}
-
-opts.parse!
+end.parse!
 
 new_argv = [ARGV.first]
 Daemons.run_proc('nephelae', {ARGV: new_argv}) do

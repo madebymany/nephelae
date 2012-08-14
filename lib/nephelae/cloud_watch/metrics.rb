@@ -13,7 +13,7 @@ module Nephelae
       @mcount = 0
     end
 
-    def append_metric(name, value, options)
+    def append_metric(name, value, options = {})
       dim_count = 1
       @mcount = @mcount + 1
       params["MetricData.member.#{@mcount}.MetricName"] = name
@@ -26,6 +26,10 @@ module Nephelae
         params["MetricData.member.#{@mcount}.Dimensions.member.#{dim_count}.Value"] = @instance_id
       end
 
+    end
+
+    def params
+      @mcount == 0 ? nil : @params
     end
 
   end

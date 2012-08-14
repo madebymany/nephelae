@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
   gem.version       = Nephelae::VERSION
 
   gem.add_dependency('excon', '~>0.14')
-  gem.add_dependency('nokogiri', '~>1.5.0')
   gem.add_dependency('eventmachine')
   gem.add_dependency('rufus-scheduler')
   gem.add_dependency('daemons')
