@@ -4,6 +4,7 @@ require "nephelae/cloud_watch/simple_aws"
 require "nephelae/cloud_watch/cloud_watch"
 require "nephelae/cloud_watch/metrics"
 
+require "nephelae/plugins/plugin"
 require "nephelae/plugins/disk_space"
 require "nephelae/plugins/mem_usage"
 require "nephelae/plugins/nephelae_process"

@@ -1,16 +1,9 @@
 module Nephelae
 
-  class MemUsage
-
-    def initialize(params = {})
-    end
-
-    def command
-      "cat /proc/meminfo"
-    end
+  class MemUsage < Plugin
 
     def get_metrics
-      metrics = Metrics.new('System/Linux')
+      metrics = Metrics.new(namespace)
       output = `#{command}`
 
       if $?.success?
@@ -34,10 +27,10 @@ module Nephelae
         metrics.append_metric('SwapFree', stats[:swap_free], {unit: 'Kilobytes'})
         swap_used = stats[:swap_total] - stats[:swap_free]
 
-        metrics.append_metric('SwapUsed', stats[:swap_used], {unit: 'Kilobytes'})
+        metrics.append_metric('SwapUsed', swap_used, {unit: 'Kilobytes'})
 
         unless stats[:swap_total] == 0
-          swap_used_percent = (stats[:swap_used].to_f / stats[:swap_total].to_f * 100).to_i
+          swap_used_percent = (swap_used.to_f / stats[:swap_total].to_f * 100).to_i
           metrics.append_metric('SwapUsedPercentage', swap_used_percent, {unit: 'Percent'})
         end
       end
@@ -56,6 +49,14 @@ module Nephelae
           :swap_total => body.match(/SwapTotal:\s+(\d+)\s/)[1].to_i,
           :swap_free => body.match(/SwapFree:\s+(\d+)\s/)[1].to_i
         }
+      end
+
+      def default_namespace
+        'Nephelae/Linux'
+      end
+
+      def command
+        "cat /proc/meminfo"
       end
 
   end

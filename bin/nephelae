@@ -3,6 +3,7 @@ require 'rubygems'
 require 'daemons'
 require 'nephelae'
 require 'optparse'
+require 'yaml'
 
 settings = {}
 logfile = ""
@@ -10,15 +11,10 @@ loglevel = nil
 
 OptionParser.new do |o|
   o.banner << " command"
-  o.on("-k", "--aws-access-key-id ACCESSKEY", "AWS Access Key to use for cloudwatch") do |v|
-    settings[:aws_access_key_id] = v
-  end
-  o.on("-s", "--aws-secret-access-key SECRETKEY", "AWS Secret Access Key to use for cloudwatch") do |v|
-    settings[:aws_secret_access_key] = v
-  end
 
-  o.on("-r", "--region REGION", "The region to use for cloudwatch") do |v|
-    settings[:region] = v
+  o.on("-c", "--config [CONFIGFILE]", "The config file to use for plugins (and aws settings)") do |v|
+    file = v || '/etc/nephelae.yml'
+    settings = YAML.load(file)
   end
 
   o.on("-lf", "--logfile [FILEPATH]", "The filepath to log to") do |v|

@@ -1,18 +1,9 @@
 module Nephelae
 
-  class DiskSpace
-    attr_accessor :path
-
-    def initialize(params = {})
-      @path = params[:path] || '/'
-    end
-
-    def command
-      "/bin/df -k -l -P #{@path}"
-    end
+  class DiskSpace < Plugin
 
     def get_metrics
-      metrics = Metrics.new('System/Linux')
+      metrics = Metrics.new(namespace)
       output = `#{command}`
       stats = output.split(/\n/).last.split(/\s+/)
 
@@ -24,6 +15,17 @@ module Nephelae
       return metrics
 
     end
+
+    private
+
+      def default_namespace
+        'Nephelae/Linux'
+      end
+
+      def command
+        path = config[:path] || '/'
+        "/bin/df -k -l -P #{path}"
+      end
 
   end
 

@@ -1,12 +1,9 @@
 module Nephelae
 
-  class NephelaeProcess
-
-    def initialize(params = {})
-    end
+  class NephelaeProcess < Plugin
 
     def get_metrics
-      metrics = Metrics.new('Application/Nephelae')
+      metrics = Metrics.new(namespace)
 
       #if we are doing this we are up
       metrics.append_metric('Up', 1)
@@ -14,6 +11,12 @@ module Nephelae
       return metrics
 
     end
+
+    private
+
+      def default_namespace
+        'Nephelae/Linux'
+      end
 
   end
 

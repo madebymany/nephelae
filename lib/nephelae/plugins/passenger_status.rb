@@ -1,16 +1,9 @@
 module Nephelae
 
-  class PassengerStatus
-
-    def initialize(params = {})
-    end
-
-    def command
-      "passenger-status"
-    end
+  class PassengerStatus < Plugin
 
     def get_metrics
-      metrics = Metrics.new('Application/Passenger')
+      metrics = Metrics.new(namespace)
       output = `#{command}`
 
       if $?.success?
@@ -36,6 +29,15 @@ module Nephelae
           :waiting_on_global_queue => body.match(/waiting on global queue\:\s+(\d+)/i)[1]
         }
       end
+
+      def default_namespace
+        'Nephelae/Passenger'
+      end
+
+      def command
+        "passenger-status"
+      end
+
 
   end
 

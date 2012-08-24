@@ -1,16 +1,9 @@
 module Nephelae
 
-  class RedisStatus
-
-    def initialize(params = {})
-    end
-
-    def command
-      "/usr/local/bin/redis-cli info"
-    end
+  class RedisStatus < Plugin
 
     def get_metrics
-      metrics = Metrics.new('Application/Redis')
+      metrics = Metrics.new(namespace)
       output = `#{command}`
 
       if $?.success?
@@ -39,12 +32,22 @@ module Nephelae
         mlio = body.match(/master_last_io_seconds_ago:(\d+)/)
         ret[:master_last_io_seconds_ago] = mlio[1] unless mlio.nil?
 
-        ret.merge {
+        ret.merge({
           :changes_since_last_save => body.match(/changes_since_last_save:(\d+)/)[1],
           :used_memory => body.match(/used_memory:(\d+)/)[1],
           :connected_slaves => body.match(/connected_slaves:(\d+)/)[1],
           :connected_clients => body.match(/connected_clients:(\d+)/)[1]
-        }
+        })
+      end
+
+      def command
+        port = config[:port].nil? ? "" : " -p #{config[:port]}"
+        password = config[:password].nil? ? "" : " -a #{config[:password]}"
+        "/usr/local/bin/redis-cli#{port}#{password} info"
+      end
+
+      def default_namespace
+        "Nephelae/Redis"
       end
 
   end
