@@ -1,5 +1,6 @@
 module Nephelae
   class CloudWatch
+    include Logging
 
     attr_accessor :aws_access_key_id, :aws_secret_access_key, :aws_session_token, :aws_credentials_expire_at, :url
 
@@ -43,7 +44,11 @@ module Nephelae
 
     def put_metric(metric)
       params = metric.params
-      request(metric.params) unless params.nil?
+      unless params.nil?
+        cw_output = request(metric.params) unless params.nil?
+        log.info(cw_output)
+        cw_output
+      end
     end
 
   end

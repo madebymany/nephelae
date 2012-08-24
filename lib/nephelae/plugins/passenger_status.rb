@@ -6,20 +6,20 @@ module Nephelae
     end
 
     def command
-      "passenger-status 2>&1"
+      "passenger-status"
     end
 
     def get_metrics
-      metrics = Metrics.new('Linux/Passenger')
+      metrics = Metrics.new('Application/Passenger')
       output = `#{command}`
 
       if $?.success?
         stats = parse_status(output)
-        metrics.append_metric('MaxInstances', stats[:max])
-        metrics.append_metric('CountInstances', stats[:count])
-        metrics.append_metric('ActiveInstances', stats[:active])
-        metrics.append_metric('InactiveInstances', stats[:inactive])
-        metrics.append_metric('WaitingOnGlobalQueue', stats[:waiting_on_global_queue])
+        metrics.append_metric('MaxInstances', stats[:max], {unit: 'Count'})
+        metrics.append_metric('CountInstances', stats[:count], {unit: 'Count'})
+        metrics.append_metric('ActiveInstances', stats[:active], {unit: 'Count'})
+        metrics.append_metric('InactiveInstances', stats[:inactive], {unit: 'Count'})
+        metrics.append_metric('WaitingOnGlobalQueue', stats[:waiting_on_global_queue], {unit: 'Count'})
 
       end
 

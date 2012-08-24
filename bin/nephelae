@@ -5,6 +5,8 @@ require 'nephelae'
 require 'optparse'
 
 settings = {}
+logfile = ""
+loglevel = nil
 
 OptionParser.new do |o|
   o.banner << " command"
@@ -18,7 +20,37 @@ OptionParser.new do |o|
   o.on("-r", "--region REGION", "The region to use for cloudwatch") do |v|
     settings[:region] = v
   end
+
+  o.on("-lf", "--logfile [FILEPATH]", "The filepath to log to") do |v|
+    logfile = v || STDOUT
+  end
+
+  o.on("-ll", "--loglevel [LOGLEVEL]", "The level to log to") do |v|
+    unless v.nil?
+      DEBUG < INFO < WARN < ERROR < FATAL
+      case v
+      when "debug"
+        loglevel = Logger::DEBUG
+      when "info"
+        loglevel = Logger::INFO
+      when "warn"
+        loglevel = Logger::WARN
+      when "error"
+        loglevel = Logger::ERROR
+      when "fatal"
+        loglevel = Logger::FATAL
+      else
+        loglevel = Logger::WARN
+      end
+    else
+      loglevel = Logger::WARN
+    end
+  end
 end.parse!
+
+log = Logger.new(logfile)
+log.level = loglevel
+Nephelae::Logging.logger = log
 
 new_argv = [ARGV.first]
 Daemons.run_proc('nephelae', {ARGV: new_argv}) do

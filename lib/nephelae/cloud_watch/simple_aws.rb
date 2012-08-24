@@ -49,6 +49,7 @@ module Nephelae
 
     def self.get_instance_id
       Excon.get('http://169.254.169.254/latest/meta-data/instance-id').body
+      #"i-f746ec92"
     end
 
   end
