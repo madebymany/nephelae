@@ -15,7 +15,9 @@ module Nephelae
 
       if $?.success?
         stats = parse_status(output)
-        metrics.append_metric('MemoryTotal', stats[:mem_total], {unit: 'Kilobytes'})
+
+        mem_total = stats[:mem_total]
+        metrics.append_metric('MemoryTotal', mem_total, {unit: 'Kilobytes'})
 
         mem_free = stats[:mem_free] + stats[:buffers] + stats[:cached]
         metrics.append_metric('MemoryFree', mem_free, {unit: 'Kilobytes'})
