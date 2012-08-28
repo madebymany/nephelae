@@ -15,6 +15,7 @@ file = '/etc/nephelae.yml'
 logfile = STDOUT
 loglevel = Logger::WARN
 logdir = '/var/log'
+piddir = '/var/run'
 
 OptionParser.new do |o|
   o.banner << " command"
@@ -25,6 +26,10 @@ OptionParser.new do |o|
 
   o.on("--logdir LOGDIR", "The directory to put log files") do |v|
     logdir = v
+  end
+
+  o.on("--piddir PIDDIR", "The directory to put pid files") do |v|
+    piddir = v
   end
 
   o.on("--loglevel LOGLEVEL", "The level to log to") do |v|
@@ -51,7 +56,7 @@ Nephelae::Logging.logger = log
 File.open( file ) { |yf| settings = YAML::load( yf ) }
 
 new_argv = [cmd]
-Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, log_output: true, dir_mode: :system}) do
+Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, dir_mode: :normal, dir: piddir, log_output: true}) do
   r = Nephelae::Runner.new(settings)
   r.run
 end
