@@ -9,47 +9,49 @@ settings = {}
 logfile = ""
 loglevel = nil
 
+cmd = ARGV.first
+
+file = '/etc/nephelae.yml'
+logfile = STDOUT
+loglevel = Logger::WARN
+logdir = '/var/log'
+
 OptionParser.new do |o|
   o.banner << " command"
 
-  o.on("-c", "--config [CONFIGFILE]", "The config file to use for plugins (and aws settings)") do |v|
-    file = v || '/etc/nephelae.yml'
-    settings = YAML.load(file)
+  o.on("--config CONFIGFILE", "The config file to use for plugins (and aws settin3yygs)") do |v|
+    file = v
   end
 
-  o.on("-lf", "--logfile [FILEPATH]", "The filepath to log to") do |v|
-    logfile = v || STDOUT
+  o.on("--logdir LOGDIR", "The directory to put log files") do |v|
+    logdir = v
   end
 
-  o.on("-ll", "--loglevel [LOGLEVEL]", "The level to log to") do |v|
-    unless v.nil?
-      DEBUG < INFO < WARN < ERROR < FATAL
-      case v
-      when "debug"
-        loglevel = Logger::DEBUG
-      when "info"
-        loglevel = Logger::INFO
-      when "warn"
-        loglevel = Logger::WARN
-      when "error"
-        loglevel = Logger::ERROR
-      when "fatal"
-        loglevel = Logger::FATAL
-      else
-        loglevel = Logger::WARN
-      end
+  o.on("--loglevel LOGLEVEL", "The level to log to") do |v|
+    case v.downcase
+    when "debug"
+      loglevel = Logger::DEBUG
+    when "info"
+      loglevel = Logger::INFO
+    when "warn"
+      loglevel = Logger::WARN
+    when "error"
+      loglevel = Logger::ERROR
+    when "fatal"
+      loglevel = Logger::FATAL
     else
       loglevel = Logger::WARN
-    end
+    end unless v.nil?
   end
 end.parse!
 
 log = Logger.new(logfile)
 log.level = loglevel
 Nephelae::Logging.logger = log
+File.open( file ) { |yf| settings = YAML::load( yf ) }
 
-new_argv = [ARGV.first]
-Daemons.run_proc('nephelae', {ARGV: new_argv}) do
+new_argv = [cmd]
+Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, log_output: true, dir_mode: :system}) do
   r = Nephelae::Runner.new(settings)
   r.run
 end
