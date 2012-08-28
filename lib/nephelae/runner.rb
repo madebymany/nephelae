@@ -7,10 +7,11 @@ module Nephelae
     attr_accessor :aws_access_key_id, :aws_secret_access_key, :region, :plugins
 
     def initialize(config = {})
-      @aws_access_key_id = config[:aws_access_key_id]
-      @aws_secret_access_key = config[:aws_secret_access_key]
-      @region = config[:region] || 'us-east-1'
-      @plugins = config[:plugins] || default_plugins
+      new_conf = config.inject({}){|memo,(k,v)| memo[k.to_sym] = v; memo}
+      @aws_access_key_id = new_conf[:aws_access_key_id]
+      @aws_secret_access_key = new_conf[:aws_secret_access_key]
+      @region = new_conf[:region] || 'us-east-1'
+      @plugins = new_conf[:plugins] || default_plugins
     end
     
     def run
