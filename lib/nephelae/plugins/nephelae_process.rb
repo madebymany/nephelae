@@ -15,7 +15,7 @@ module Nephelae
     private
 
       def default_namespace
-        'Nephelae/Linux'
+        'Nephelae/Process'
       end
 
   end

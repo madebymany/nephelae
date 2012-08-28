@@ -12,6 +12,7 @@ module Nephelae
       @aws_secret_access_key = new_conf[:aws_secret_access_key]
       @region = new_conf[:region] || 'us-east-1'
       @plugins = new_conf[:plugins] || default_plugins
+      @plugins[:nephelae_process] = {plugin_class: "NephelaeProcess", schedule: "5m"}
     end
     
     def run
