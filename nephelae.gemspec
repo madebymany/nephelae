@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.email         = ["stuart@madebymany.co.uk"]
   gem.description   = %q{Nephelae is a daemon process that will upload custom cloud watch metrics in AWS}
   gem.summary       = %q{Poll for server metrics and post them to AWS as custom CloudWatch metrics}
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/madebymany/nephelae"
 
   gem.files         = `git ls-files`.split($\)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
