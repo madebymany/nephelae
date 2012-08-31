@@ -9,7 +9,7 @@ module Nephelae
       if $?.success?
         stats = parse_status(output)
         metrics.append_metric('Up', 1)
-        metrics.append_metric('MasterLinkStatus', (stats[:master] == 'up' ? 1 : 0)) unless stats[:master].nil?
+        metrics.append_metric('MasterLinkStatus', (stats[:master_link_status] == 'up' ? 1 : 0)) unless stats[:master_link_status].nil?
         metrics.append_metric('MasterIOSecondsAgo', stats[:master_last_io_seconds_ago], {unit: 'Seconds'}) unless stats[:master_last_io_seconds_ago].nil?
         metrics.append_metric('ChangesSinceLastSave', stats[:changes_since_last_save], {unit: 'Count'})
         metrics.append_metric('UsedMemory', stats[:used_memory], {unit: 'Bytes'})
