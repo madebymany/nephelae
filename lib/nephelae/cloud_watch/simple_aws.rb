@@ -1,6 +1,7 @@
 require 'base64'
 require 'excon'
 require 'openssl'
+require 'nephelae/logging'
 
 module Nephelae
   module AWS
@@ -48,8 +49,11 @@ module Nephelae
     end
 
     def self.get_instance_id
-      Excon.get('http://169.254.169.254/latest/meta-data/instance-id').body
-      #"i-f746ec92"
+      begin
+        Excon.get('http://169.254.169.254/latest/meta-data/instance-id', :connect_timeout => 1).body
+      rescue
+        Logging.logger.error "Error getting meta data for EC2 instace"
+      end
     end
 
   end

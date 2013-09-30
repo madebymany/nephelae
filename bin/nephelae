@@ -16,6 +16,7 @@ logfile = STDOUT
 loglevel = Logger::WARN
 logdir = '/var/log'
 piddir = '/var/run'
+foreground = false
 
 OptionParser.new do |o|
   o.banner << " command"
@@ -26,6 +27,10 @@ OptionParser.new do |o|
 
   o.on("--logdir LOGDIR", "The directory to put log files") do |v|
     logdir = v
+  end
+
+  o.on("-f", "--foreground", "Run in foreground") do |v|
+    foreground = v
   end
 
   o.on("--piddir PIDDIR", "The directory to put pid files") do |v|
@@ -56,7 +61,13 @@ Nephelae::Logging.logger = log
 File.open( file ) { |yf| settings = YAML::load( yf ) }
 
 new_argv = [cmd]
-Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, dir_mode: :normal, dir: piddir, log_output: true}) do
+if not foreground then
+  Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, dir_mode: :normal, dir: piddir, log_output: true}) do
+    r = Nephelae::Runner.new(settings)
+    r.run
+  end
+else
   r = Nephelae::Runner.new(settings)
   r.run
 end
+

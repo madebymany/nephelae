@@ -25,7 +25,9 @@ module Nephelae
 
           scheduler = Rufus::Scheduler::EmScheduler.start_new
 
+          log.warn("setting up schudules")
           plugins.each do |name, config|
+            log.warn("setting up schudule for #{name} plugin")
             schedule = config.delete(:schedule) || '5m'
             klass_name = config.delete(:plugin_class)
             klass = Object.const_get('Nephelae').const_get(klass_name)

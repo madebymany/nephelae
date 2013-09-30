@@ -25,7 +25,6 @@ module Nephelae
         params["MetricData.member.#{@mcount}.Dimensions.member.#{dim_count}.Name"] = 'InstanceId'
         params["MetricData.member.#{@mcount}.Dimensions.member.#{dim_count}.Value"] = @instance_id
       end
-
     end
 
     def params
