@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'daemons'
-require 'nephelae'
+require_relative '../lib/nephelae'
 require 'optparse'
 require 'yaml'
 
@@ -17,6 +17,7 @@ loglevel = Logger::WARN
 logdir = '/var/log'
 piddir = '/var/run'
 foreground = false
+instance_name = nil
 
 OptionParser.new do |o|
   o.banner << " command"
@@ -29,7 +30,11 @@ OptionParser.new do |o|
     logdir = v
   end
 
-  o.on("-f", "--foreground", "Run in foreground") do |v|
+  o.on("--instance-name INSTANCE_NAME", "The instance name you want metrics bound to") do |v|
+    instance_name = v
+  end
+
+  o.on("--foreground FOREGROUND", "Run in foreground") do |v|
     foreground = v
   end
 
@@ -63,11 +68,9 @@ File.open( file ) { |yf| settings = YAML::load( yf ) }
 new_argv = [cmd]
 if not foreground then
   Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, dir_mode: :normal, dir: piddir, log_output: true}) do
-    r = Nephelae::Runner.new(settings)
-    r.run
+    Nephelae::Runner.run(instance_name, settings)
   end
 else
-  r = Nephelae::Runner.new(settings)
-  r.run
+  Nephelae::Runner.run(instance_name, settings)
 end
 

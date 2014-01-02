@@ -1,10 +1,12 @@
 *.gem
+.vagrant
 *.rbc
 .bundle
 .config
 Gemfile.lock
 InstalledFiles
 coverage
+nephelae.yml
 doc/
 lib/bundler/man
 pkg

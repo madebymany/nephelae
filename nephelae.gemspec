@@ -19,6 +19,5 @@ Gem::Specification.new do |gem|
   gem.add_dependency('eventmachine')
   gem.add_dependency('rufus-scheduler')
   gem.add_dependency('daemons')
-  gem.add_dependency('ruby-hmac')
 
 end
