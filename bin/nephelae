@@ -66,11 +66,11 @@ Nephelae::Logging.logger = log
 File.open( file ) { |yf| settings = YAML::load( yf ) }
 
 new_argv = [cmd]
-if not foreground then
+if foreground then
+  Nephelae::Runner.run(instance_name, settings)
+else
   Daemons.run_proc('nephelae', {ARGV: new_argv, log_dir: logdir, dir_mode: :normal, dir: piddir, log_output: true}) do
     Nephelae::Runner.run(instance_name, settings)
   end
-else
-  Nephelae::Runner.run(instance_name, settings)
 end
 
