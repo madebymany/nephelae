@@ -22,12 +22,40 @@ To run the nephelae deamon
 
 This will start with default settings looking for a config yaml file in .etc/nephelae.yml. It will use /var/log as a log directory and /var/run for a pid directory
 
-To start with full config settings
-    $ nephelae start --config /home/nephelae/config.yml --logdir /home/nephelae/nephelae.log --piddir /home/nephelae/nephelae.pid --loglevel debug
+To start in the background (this uses the daemon gem http://daemons.rubyforge.org/)
+
+    $ nephelae start --piddir /home/nephelae/nephelae.pid --loglevel debug
+    
+    
+To start in the foreground
+
+	$ nephelae --foreground
+
+Other command line options
+
+	--loglevel *level* (debug, info, warn, error, fatal) default: warn
+	--config *path*
+	--instance-name *override the instance-id*
 
 ## Configuration
 
 The config yaml file is used to define the AWS access keys and plugin settings
+
+An example configuration file
+
+```yaml
+:aws_secret_access_key: **your secret key**
+:aws_access_key_id: **your access key**
+:region: **region to log metrics to** e.g.()
+:plugins:
+  :disk_space:
+    :plugin_class: DiskSpace
+    :path: /
+    :schedule: 1m
+  :mem_usage:
+    :plugin_class: MemUsage
+    :schedule: 1m
+'''
 
 ## Contributing
 
