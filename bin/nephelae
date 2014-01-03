@@ -34,7 +34,7 @@ OptionParser.new do |o|
     instance_name = v
   end
 
-  o.on("--foreground FOREGROUND", "Run in foreground") do |v|
+  o.on("--foreground", "Run in foreground") do |v|
     foreground = v
   end
 

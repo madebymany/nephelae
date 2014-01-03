@@ -24,6 +24,8 @@ module Nephelae
       log.warn "starting nephelae"
       EM.run {
         cloud = CloudWatch.new({aws_access_key_id: @aws_access_key_id, aws_secret_access_key: @aws_secret_access_key, region: @region})
+        @instance_name ||= cloud.get_instance_id
+
         log.warn("sending metrics for instance : #{@instance_name}")
 
         #make one request to put a cloud watch metric for nephelae being up. hopefully this can make it bork early if anything is wrong

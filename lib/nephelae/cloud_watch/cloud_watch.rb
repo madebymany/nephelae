@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'excon'
 
 module Nephelae
   class CloudWatch
@@ -37,6 +38,10 @@ module Nephelae
         end
         @cw.put_metric_data(data)
       end
+    end
+
+    def get_instance_id()
+      Excon.get('http://169.254.169.254/latest/meta-data/instance-id').body
     end
 
   end
