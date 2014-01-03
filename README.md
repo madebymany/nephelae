@@ -44,9 +44,9 @@ The config yaml file is used to define the AWS access keys and plugin settings
 An example configuration file
 
 ```yaml
-:aws_secret_access_key: **your secret key**
-:aws_access_key_id: **your access key**
-:region: **region to log metrics to** e.g.()
+:aws_secret_access_key: your_secret_key
+:aws_access_key_id: your_access_key
+:region: ec2_region
 :plugins:
   :disk_space:
     :plugin_class: DiskSpace
@@ -55,7 +55,7 @@ An example configuration file
   :mem_usage:
     :plugin_class: MemUsage
     :schedule: 1m
-'''
+```
 
 ## Contributing
 
