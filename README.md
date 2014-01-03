@@ -12,8 +12,6 @@ To install as a gem
 
     $ gem install nephelae
 
-You probably will want to install nephelae as part of a server setup. An example Chef cookbook can be found at https://github.com/madebymany/cookbooks/tree/master/nephelae
-
 ## Usage
 
 To run the nephelae deamon
