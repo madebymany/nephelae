@@ -1,3 +1,6 @@
+require 'aws-sdk'
+require 'excon'
+
 module Nephelae
   class CloudWatch
     include Logging
@@ -5,50 +8,40 @@ module Nephelae
     attr_accessor :aws_access_key_id, :aws_secret_access_key, :aws_session_token, :aws_credentials_expire_at, :url
 
     def initialize(options={})
-      options[:region] ||= 'us-east-1'
-      @host       = options[:host] || "monitoring.#{options[:region]}.amazonaws.com"
-      @path       = options[:path]        || '/'
-      @port       = options[:port]        || 443
-      @scheme     = options[:scheme]      || 'https'
-      @aws_access_key_id      = options[:aws_access_key_id]
-      @aws_secret_access_key  = options[:aws_secret_access_key]
-      @aws_session_token      = options[:aws_session_token]
-      @aws_credentials_expire_at = options[:aws_credentials_expire_at]
+      opts = {
+        access_key_id: options[:aws_access_key_id],
+        secret_access_key: options[:aws_secret_access_key],
+        region: options[:region]
+      }
 
-      @url = "#{@scheme}://#{@host}:#{@port}#{@path}"
-
+      AWS.config opts
+      @cw = AWS::CloudWatch.new
     end
 
-    def request(params)
-      body = AWS.signed_params(
-        params,
-        {
-          :aws_access_key_id  => @aws_access_key_id,
-          :aws_session_token  => @aws_session_token,
-          :aws_secret_access_key => @aws_secret_access_key,
-          :host               => @host,
-          :path               => @path,
-          :port               => @port,
-          :version            => '2010-08-01'
-        }
-      )
-
-      AWS.request(@url, {
-         :body       => body,
-         :expects    => 200,
-         :headers    => { 'Content-Type' => 'application/x-www-form-urlencoded' },
-         :host       => @host,
-         :method     => 'POST'
-       })
-    end
-
-    def put_metric(metric)
+    def put_metric(instance_name, metric)
       params = metric.params
+      data = {}
+      data[:namespace] = metric.namespace
+      data[:metric_data] = []
       unless params.nil?
-        cw_output = request(metric.params) unless params.nil?
-        log.info(cw_output)
-        cw_output
+        params.each do |param|
+          Logging.logger.warn "Key : #{param[:name]}, Value : #{param[:value]}"
+          options = {}
+          options[:metric_name] = param[:name]
+          options[:dimensions] = [
+            {name: 'InstanceId', value: instance_name}
+          ]
+          options[:timestamp] = Time.now.iso8601
+          options[:value] = param[:value]
+          options[:unit] = param[:unit]
+          data[:metric_data] << options
+        end
+        @cw.put_metric_data(data)
       end
+    end
+
+    def get_instance_id()
+      Excon.get('http://169.254.169.254/latest/meta-data/instance-id').body
     end
 
   end

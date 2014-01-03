@@ -13,7 +13,6 @@ module Nephelae
         metrics.append_metric('ActiveInstances', stats[:active], {unit: 'Count'})
         metrics.append_metric('InactiveInstances', stats[:inactive], {unit: 'Count'})
         metrics.append_metric('WaitingOnGlobalQueue', stats[:waiting_on_global_queue], {unit: 'Count'})
-
       end
 
       return metrics
